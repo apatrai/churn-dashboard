@@ -8,6 +8,7 @@ import TopPlansTable from './Tables/TopPlansTable';
 import TopCountriesTable from './Tables/TopCountriesTable';
 import { ChurnRecord, UploadPreview, Filters, UploadHistory } from '../types';
 import { exportToCSV, filterByCRM } from '../utils/dataProcessing';
+import { supabase } from '../utils/supabase';
 
 const ChurnDashboard: React.FC = () => {
   const [allData, setAllData] = useState<ChurnRecord[]>([]);
@@ -30,28 +31,75 @@ const ChurnDashboard: React.FC = () => {
   const [dataHistory, setDataHistory] = useState<UploadHistory[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Load data from localStorage on mount
+  // Load data from localStorage and Supabase on mount
   useEffect(() => {
-    const storedData = localStorage.getItem('churnDashboardData');
-    const storedHistory = localStorage.getItem('churnDashboardHistory');
-    
-    if (storedData) {
+    const loadData = async () => {
       try {
-        const parsedData = JSON.parse(storedData);
-        setAllData(parsedData);
+        console.log('Supabase client:', supabase);
+        console.log('Supabase type:', typeof supabase);
+        
+        // Try to fetch data from Supabase first
+        const { data: supabaseData, error } = await supabase
+          .from('churn_data')
+          .select('*');
+        
+        if (!error && supabaseData && supabaseData.length > 0) {
+          // Convert Supabase data to ChurnRecord format
+          const formattedData: ChurnRecord[] = supabaseData.map(record => ({
+            email: record.email || '',
+            stripeUserId: record.stripe_user_id,
+            plans: record.plans || '',
+            activity: record.activity || '',
+            mrrCancelled: record.mrr_cancelled || 0,
+            cancellationDate: record.cancellation_date || '',
+            signUpDate: record.sign_up_date || '',
+            seats: record.seats || 0,
+            monthsSubscribed: record.months_subscribed || 0,
+            country: record.country || '',
+            crm: record.crm || ''
+          }));
+          setAllData(formattedData);
+          // Also update localStorage as backup
+          localStorage.setItem('churnDashboardData', JSON.stringify(formattedData));
+        } else {
+          // Fallback to localStorage if Supabase is empty or has error
+          const storedData = localStorage.getItem('churnDashboardData');
+          if (storedData) {
+            try {
+              const parsedData = JSON.parse(storedData);
+              setAllData(parsedData);
+            } catch (error) {
+              console.error('Error loading stored data:', error);
+            }
+          }
+        }
       } catch (error) {
-        console.error('Error loading stored data:', error);
+        console.error('Error loading from Supabase:', error);
+        // Fallback to localStorage
+        const storedData = localStorage.getItem('churnDashboardData');
+        if (storedData) {
+          try {
+            const parsedData = JSON.parse(storedData);
+            setAllData(parsedData);
+          } catch (error) {
+            console.error('Error loading stored data:', error);
+          }
+        }
       }
-    }
+      
+      // Load history from localStorage
+      const storedHistory = localStorage.getItem('churnDashboardHistory');
+      if (storedHistory) {
+        try {
+          const parsedHistory = JSON.parse(storedHistory);
+          setDataHistory(parsedHistory);
+        } catch (error) {
+          console.error('Error loading history:', error);
+        }
+      }
+    };
     
-    if (storedHistory) {
-      try {
-        const parsedHistory = JSON.parse(storedHistory);
-        setDataHistory(parsedHistory);
-      } catch (error) {
-        console.error('Error loading history:', error);
-      }
-    }
+    loadData();
   }, []);
 
   // Save data to localStorage whenever it changes
@@ -122,9 +170,44 @@ const ChurnDashboard: React.FC = () => {
     return filtered;
   }, [allData, filters]);
 
-  const handleFileUpload = (newData: ChurnRecord[], preview: UploadPreview) => {
+  const handleFileUpload = async (newData: ChurnRecord[], preview: UploadPreview) => {
     // Update data with new records (duplicates already filtered)
     setAllData(prevData => [...prevData, ...newData]);
+    
+    // Insert/upsert data to Supabase
+    try {
+      // Convert ChurnRecord to Supabase format
+      const supabaseRecords = newData.map(record => ({
+        email: record.email,
+        stripe_user_id: record.stripeUserId,
+        plans: record.plans,
+        activity: record.activity,
+        mrr_cancelled: record.mrrCancelled,
+        cancellation_date: record.cancellationDate,
+        sign_up_date: record.signUpDate,
+        seats: record.seats,
+        months_subscribed: record.monthsSubscribed,
+        country: record.country,
+        crm: record.crm
+      }));
+      
+      // Upsert to Supabase (will update if stripe_user_id exists, insert if new)
+      const { error } = await supabase
+        .from('churn_data')
+        .upsert(supabaseRecords, {
+          onConflict: 'stripe_user_id'
+        });
+      
+      if (error) {
+        console.error('Error uploading to Supabase:', error);
+        // Continue with localStorage backup even if Supabase fails
+      }
+    } catch (error) {
+      console.error('Error uploading to Supabase:', error);
+    }
+    
+    // Update localStorage as backup
+    localStorage.setItem('churnDashboardData', JSON.stringify([...allData, ...newData]));
     
     // Add to history
     const historyEntry: UploadHistory = {

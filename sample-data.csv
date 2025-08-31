@@ -1,0 +1,36 @@
+Email,Stripe User ID,Plans,Activity,MRR Cancelled,Cancellation date,Sign Up Date,Seats,Months Subscribed,Country,CRM
+john.doe@email.com,cus_001,HubSpot Integration Pro (Monthly),Inactive,-149.99,2024-01-15,2023-06-01,1,7,USA,HubSpot
+jane.smith@email.com,cus_002,Pipedrive Integration (Annual),Active,-599.99,2024-02-20,2023-07-15,3,7,Canada,Pipedrive
+bob.wilson@email.com,cus_003,Shared Inbox (Monthly),Inactive,-29.99,2024-01-10,2023-08-20,1,5,UK,No_CRM
+alice.brown@email.com,cus_004,HubSpot Integration Basic (Monthly),Active,-49.99,2024-03-01,2023-09-05,2,6,USA,HubSpot
+charlie.davis@email.com,cus_005,CRM Integration (Quarterly),Inactive,-149.99,2024-02-15,2023-10-12,2,4,Germany,Generic_CRM
+emma.johnson@email.com,cus_006,Zoho CRM Integration (Annual),Active,-999.99,2024-03-10,2023-11-20,10,4,France,Zoho
+david.miller@email.com,cus_007,Mass Messaging (Monthly),Inactive,-39.99,2024-01-25,2023-12-01,1,2,Australia,No_CRM
+sophia.garcia@email.com,cus_008,Pipedrive Integration Plus (Monthly),Active,-99.99,2024-03-15,2024-01-05,2,2,Spain,Pipedrive
+liam.martinez@email.com,cus_009,HubSpot Integration Enterprise (Annual),Inactive,-2999.99,2024-02-28,2023-05-15,5,9,Mexico,HubSpot
+olivia.rodriguez@email.com,cus_010,CRM Sync (Quarterly),Active,-89.99,2024-03-20,2023-06-20,3,9,Brazil,Generic_CRM
+noah.chen@email.com,cus_011,Zoho CRM Integration Pro (Annual),Inactive,-1499.99,2024-01-05,2022-01-10,15,24,China,Zoho
+ava.kumar@email.com,cus_012,Shared Inbox (Monthly),Inactive,-29.99,2024-02-10,2023-11-01,1,3,India,No_CRM
+jackson.lee@email.com,cus_013,HubSpot Integration (Monthly),Active,-79.99,2024-03-05,2023-10-15,2,5,Japan,HubSpot
+mia.wang@email.com,cus_014,Pipedrive Integration Pro (Annual),Inactive,-899.99,2024-01-20,2022-07-20,5,18,Singapore,Pipedrive
+lucas.brown@email.com,cus_015,Mass Messaging Pro (Monthly),Inactive,-59.99,2024-02-25,2023-12-15,1,2,USA,No_CRM
+isabella.jones@email.com,cus_016,CRM Integration Plus (Quarterly),Active,-249.99,2024-03-12,2023-08-01,3,7,Canada,Generic_CRM
+ethan.davis@email.com,cus_017,HubSpot Integration Premium (Annual),Inactive,-4999.99,2024-01-30,2021-01-30,20,36,UK,HubSpot
+harper.smith@email.com,cus_018,Shared Inbox Basic (Monthly),Active,-19.99,2024-03-18,2024-02-01,1,1,Australia,No_CRM
+alexander.johnson@email.com,cus_019,Pipedrive Integration (Monthly),Inactive,-69.99,2024-02-05,2023-04-10,4,10,Germany,Pipedrive
+amelia.williams@email.com,cus_020,Zoho CRM Integration Basic (Annual),Active,-399.99,2024-03-22,2022-09-15,5,18,France,Zoho
+michael.brown@email.com,cus_021,HubSpot Integration (Monthly),Inactive,-79.99,2024-01-12,2023-07-10,2,6,USA,HubSpot
+sarah.davis@email.com,cus_022,CRM Integration Pro (Monthly),Active,-199.99,2024-02-18,2023-09-20,4,5,Canada,Salesforce
+james.wilson@email.com,cus_023,Pipedrive Integration Basic (Monthly),Inactive,-49.99,2024-03-08,2023-11-15,1,4,UK,Pipedrive
+emily.taylor@email.com,cus_024,Mass Messaging Enterprise (Annual),Active,-999.99,2024-01-22,2022-06-01,10,19,USA,No_CRM
+daniel.anderson@email.com,cus_025,HubSpot Integration Plus (Quarterly),Inactive,-449.99,2024-02-14,2023-08-05,3,6,Germany,HubSpot
+olivia.martin@email.com,cus_026,Shared Inbox Pro (Monthly),Active,-49.99,2024-03-11,2023-12-10,2,3,France,No_CRM
+william.thomas@email.com,cus_027,Zoho CRM Integration (Monthly),Inactive,-99.99,2024-01-28,2023-10-01,2,4,Australia,Zoho
+sophia.jackson@email.com,cus_028,CRM Sync Pro (Annual),Active,-799.99,2024-02-25,2022-08-15,6,18,Spain,Salesforce
+benjamin.white@email.com,cus_029,Pipedrive Integration Enterprise (Annual),Inactive,-2499.99,2024-03-02,2021-03-01,15,36,Mexico,Pipedrive
+emma.harris@email.com,cus_030,HubSpot Integration (Monthly),Active,-79.99,2024-01-18,2023-09-10,2,4,Brazil,HubSpot
+robert.lee@email.com,cus_031,Monday.com Integration (Monthly),Inactive,-89.99,2024-02-12,2023-08-20,3,6,Canada,Monday
+lisa.chen@email.com,cus_032,Salesforce Integration Pro (Annual),Active,-1999.99,2024-03-15,2022-09-01,8,18,USA,Salesforce
+david.kim@email.com,cus_033,No Integration - Basic Plan,Inactive,-19.99,2024-01-25,2023-11-10,1,2,Japan,No_CRM
+maria.garcia@email.com,cus_034,Monday.com Integration Plus,Active,-149.99,2024-02-28,2023-07-15,5,7,Spain,Monday
+thomas.mueller@email.com,cus_035,HubSpot Integration (Annual),Inactive,-999.99,2024-03-10,2022-03-10,4,24,Germany,HubSpot

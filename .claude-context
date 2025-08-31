@@ -1,0 +1,24 @@
+cat > .claude-context << 'EOF'
+PROJECT: Churn Dashboard
+LOCATION: C:\Users\work\churn-dashboard
+
+MUST READ BEFORE ANY WORK:
+1. Read churn-dashboard-specs.md - Contains ALL technical requirements
+2. Read churn-dashboard-memory.md - Contains critical bugs and solutions
+3. Read churn-dashboard-quickfix.md - Quick reference for common issues
+
+CRITICAL DEPENDENCIES (use exact versions):
+- tailwindcss@3.3.0 postcss@8.4.31 autoprefixer@10.4.16
+- If PostCSS errors: echo "SKIP_PREFLIGHT_CHECK=true" > .env
+
+BEFORE ANY WORK:
+cd C:\Users\work\churn-dashboard
+pwd                     # Verify location
+cat src/App.tsx        # Check if imports ChurnDashboard
+npm start              # Check current state
+
+COMMON ISSUES:
+- Tailwind not working? Check versions above
+- Blank page? Clear localStorage in browser
+- React logo? Update App.tsx manually
+EOF

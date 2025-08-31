@@ -183,7 +183,7 @@ const ChurnDashboard: React.FC = () => {
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Churn Analysis Dashboard</h1>
-              <p className="text-gray-600">Monitor and analyze customer churn patterns</p>
+              <p className="text-gray-600">Monitor and analyze customer churn patterns - Live version</p>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-500">Total Records: {allData.length}</p>

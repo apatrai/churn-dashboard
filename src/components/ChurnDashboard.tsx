@@ -242,10 +242,11 @@ const ChurnDashboard: React.FC = () => {
     console.log('Applying MRR range filter: min =', filters.mrrRange.min, 'max =', filters.mrrRange.max);
     const beforeMRR = filtered.length;
     filtered = filtered.filter(item => {
-      const passes = item.mrrCancelled >= filters.mrrRange.min && 
-                     item.mrrCancelled <= filters.mrrRange.max;
+      const absMRR = Math.abs(item.mrrCancelled);
+      const passes = absMRR >= filters.mrrRange.min && 
+                     absMRR <= filters.mrrRange.max;
       if (!passes) {
-        console.log('Record filtered out by MRR:', item.mrrCancelled, 'not in range', filters.mrrRange);
+        console.log('Record filtered out by MRR:', item.mrrCancelled, '(absolute:', absMRR, ') not in range', filters.mrrRange);
       }
       return passes;
     });

@@ -212,14 +212,16 @@ export const getTopCountries = (data: ChurnRecord[], limit: number = 10): ChartD
   const total = data.length;
   
   data.forEach(record => {
-    if (record.country) {
-      if (!countryData.has(record.country)) {
-        countryData.set(record.country, { customers: 0, mrrLost: 0 });
-      }
-      const current = countryData.get(record.country)!;
-      current.customers++;
-      current.mrrLost += record.mrrCancelled;
+    // Handle empty/null countries as 'Unknown'
+    const countryName = record.country || 'Unknown';
+    
+    if (!countryData.has(countryName)) {
+      countryData.set(countryName, { customers: 0, mrrLost: 0 });
     }
+    const current = countryData.get(countryName)!;
+    current.customers++;
+    // Use absolute value for MRR since values are stored as negative
+    current.mrrLost += Math.abs(record.mrrCancelled);
   });
   
   return Array.from(countryData.entries())

@@ -34,6 +34,7 @@ const ChurnDashboard: React.FC = () => {
 
   // Load data from localStorage and Supabase on mount
   useEffect(() => {
+    console.log('UseEffect running: Initial data load from Supabase/localStorage', 'allData length:', allData.length);
     console.log('Component mounted, fetching data...');
     console.log('Current allData length at mount:', allData.length);
     
@@ -83,6 +84,16 @@ const ChurnDashboard: React.FC = () => {
           setAllData(formattedData);
           setFilteredData(formattedData);
           console.log('Current allData state will be updated with:', formattedData);
+          // Check what's in localStorage right now
+          const checkStorage = localStorage.getItem('churnDashboardData');
+          if (checkStorage) {
+            try {
+              const checkData = JSON.parse(checkStorage);
+              console.log('WARNING: localStorage currently has:', checkData.length, 'records - this might overwrite!');
+            } catch (e) {
+              console.log('localStorage parse error:', e);
+            }
+          }
         } else {
           console.log('No data from Supabase or error occurred, falling back to localStorage');
           // Fallback to localStorage if Supabase is empty or has error
@@ -137,8 +148,14 @@ const ChurnDashboard: React.FC = () => {
 
   // Save data to localStorage whenever it changes
   useEffect(() => {
+    console.log('UseEffect running: Save to localStorage', 'allData length:', allData.length, 'dataHistory length:', dataHistory.length);
     if (allData.length > 0) {
+      console.log('Saving', allData.length, 'records to localStorage');
       localStorage.setItem('churnDashboardData', JSON.stringify(allData));
+      // Double-check what was saved
+      const saved = localStorage.getItem('churnDashboardData');
+      const savedParsed = JSON.parse(saved || '[]');
+      console.log('Verified localStorage now has:', savedParsed.length, 'records');
     }
     if (dataHistory.length > 0) {
       localStorage.setItem('churnDashboardHistory', JSON.stringify(dataHistory));
@@ -147,6 +164,7 @@ const ChurnDashboard: React.FC = () => {
 
   // Apply filters when allData or filters change
   useEffect(() => {
+    console.log('UseEffect running: Apply filters', 'allData length:', allData.length, 'filters:', filters);
     let filtered = [...allData];
 
     // Date range filter
@@ -200,6 +218,7 @@ const ChurnDashboard: React.FC = () => {
       item.monthsSubscribed <= filters.tenureRange.max
     );
 
+    console.log('About to setFilteredData with:', filtered.length, 'records (from', allData.length, 'total)');
     setFilteredData(filtered);
   }, [allData, filters]);
 

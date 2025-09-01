@@ -35,8 +35,10 @@ const ChurnDashboard: React.FC = () => {
   // Load data from localStorage and Supabase on mount
   useEffect(() => {
     console.log('Component mounted, fetching data...');
+    console.log('Current allData length at mount:', allData.length);
     
     const loadData = async () => {
+      console.log('loadData function started');
       try {
         console.log('Supabase client:', supabase);
         console.log('Supabase type:', typeof supabase);
@@ -71,12 +73,13 @@ const ChurnDashboard: React.FC = () => {
             country: record.country || '',
             crm: record.crm || ''
           }));
-          console.log('Setting allData with', formattedData.length, 'records');
+          console.log('About to setAllData with:', formattedData.length, 'records from: Supabase (first call)');
           setAllData(formattedData);
           // Also update localStorage as backup
           localStorage.setItem('churnDashboardData', JSON.stringify(formattedData));
           console.log('Data loaded from Supabase and saved to localStorage');
           // Update React state
+          console.log('About to setAllData with:', formattedData.length, 'records from: Supabase (second call)');
           setAllData(formattedData);
           setFilteredData(formattedData);
           console.log('Current allData state will be updated with:', formattedData);
@@ -84,9 +87,12 @@ const ChurnDashboard: React.FC = () => {
           console.log('No data from Supabase or error occurred, falling back to localStorage');
           // Fallback to localStorage if Supabase is empty or has error
           const storedData = localStorage.getItem('churnDashboardData');
+          console.log('localStorage data exists?', !!storedData, 'length:', storedData ? storedData.length : 0);
           if (storedData) {
             try {
               const parsedData = JSON.parse(storedData);
+              console.log('Parsed localStorage data:', parsedData);
+              console.log('About to setAllData with:', parsedData.length, 'records from: localStorage (no Supabase data)');
               setAllData(parsedData);
               setFilteredData(parsedData);
               console.log('Loaded', parsedData.length, 'records from localStorage');
@@ -104,6 +110,7 @@ const ChurnDashboard: React.FC = () => {
         if (storedData) {
           try {
             const parsedData = JSON.parse(storedData);
+            console.log('About to setAllData with:', parsedData.length, 'records from: localStorage (after error)');
             setAllData(parsedData);
             setFilteredData(parsedData);
             console.log('Loaded', parsedData.length, 'records from localStorage after error');
@@ -198,6 +205,7 @@ const ChurnDashboard: React.FC = () => {
 
   const handleFileUpload = async (newData: ChurnRecord[], preview: UploadPreview) => {
     // Update data with new records (duplicates already filtered)
+    console.log('About to setAllData with:', [...allData, ...newData].length, 'records from: File Upload (adding', newData.length, 'new records)');
     setAllData(prevData => [...prevData, ...newData]);
     
     // Insert/upsert data to Supabase
@@ -255,6 +263,7 @@ const ChurnDashboard: React.FC = () => {
 
   const handleClearData = () => {
     if (window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+      console.log('About to setAllData with: 0 records from: Clear Data button');
       setAllData([]);
       setDataHistory([]);
       localStorage.removeItem('churnDashboardData');

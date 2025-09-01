@@ -104,13 +104,15 @@ export const getChurnByPlan = (data: ChurnRecord[]): ChartDataPoint[] => {
   const planData = new Map<string, { customers: number; mrrLost: number }>();
   
   data.forEach(record => {
-    const cleanedPlan = cleanPlanName(record.plans);
-    if (!planData.has(cleanedPlan)) {
-      planData.set(cleanedPlan, { customers: 0, mrrLost: 0 });
+    // Keep the full plan name including (default_monthly) for proper grouping
+    const planName = record.plans || 'Unknown';
+    if (!planData.has(planName)) {
+      planData.set(planName, { customers: 0, mrrLost: 0 });
     }
-    const current = planData.get(cleanedPlan)!;
+    const current = planData.get(planName)!;
     current.customers++;
-    current.mrrLost += record.mrrCancelled;
+    // Use absolute value for MRR since values are stored as negative
+    current.mrrLost += Math.abs(record.mrrCancelled);
   });
   
   return Array.from(planData.entries())

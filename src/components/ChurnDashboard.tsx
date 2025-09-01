@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, Trash2, Eye, AlertCircle } from 'lucide-react';
 import FileUpload from './FileUpload';
 import MetricsCards from './MetricsCards';
@@ -12,6 +12,7 @@ import { supabase } from '../utils/supabase';
 
 const ChurnDashboard: React.FC = () => {
   const [allData, setAllData] = useState<ChurnRecord[]>([]);
+  const [filteredData, setFilteredData] = useState<ChurnRecord[]>([]);
   const [filters, setFilters] = useState<Filters>({
     dateRange: { start: '', end: '' },
     plan: 'all',
@@ -70,10 +71,15 @@ const ChurnDashboard: React.FC = () => {
             country: record.country || '',
             crm: record.crm || ''
           }));
+          console.log('Setting allData with', formattedData.length, 'records');
           setAllData(formattedData);
           // Also update localStorage as backup
           localStorage.setItem('churnDashboardData', JSON.stringify(formattedData));
           console.log('Data loaded from Supabase and saved to localStorage');
+          // Update React state
+          setAllData(formattedData);
+          setFilteredData(formattedData);
+          console.log('Current allData state will be updated with:', formattedData);
         } else {
           console.log('No data from Supabase or error occurred, falling back to localStorage');
           // Fallback to localStorage if Supabase is empty or has error
@@ -82,6 +88,7 @@ const ChurnDashboard: React.FC = () => {
             try {
               const parsedData = JSON.parse(storedData);
               setAllData(parsedData);
+              setFilteredData(parsedData);
               console.log('Loaded', parsedData.length, 'records from localStorage');
             } catch (error) {
               console.error('Error loading stored data:', error);
@@ -98,6 +105,7 @@ const ChurnDashboard: React.FC = () => {
           try {
             const parsedData = JSON.parse(storedData);
             setAllData(parsedData);
+            setFilteredData(parsedData);
             console.log('Loaded', parsedData.length, 'records from localStorage after error');
           } catch (error) {
             console.error('Error loading stored data:', error);
@@ -130,8 +138,8 @@ const ChurnDashboard: React.FC = () => {
     }
   }, [allData, dataHistory]);
 
-  // Apply filters
-  const filteredData = useMemo(() => {
+  // Apply filters when allData or filters change
+  useEffect(() => {
     let filtered = [...allData];
 
     // Date range filter
@@ -185,7 +193,7 @@ const ChurnDashboard: React.FC = () => {
       item.monthsSubscribed <= filters.tenureRange.max
     );
 
-    return filtered;
+    setFilteredData(filtered);
   }, [allData, filters]);
 
   const handleFileUpload = async (newData: ChurnRecord[], preview: UploadPreview) => {

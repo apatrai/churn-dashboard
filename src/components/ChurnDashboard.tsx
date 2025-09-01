@@ -166,22 +166,40 @@ const ChurnDashboard: React.FC = () => {
   useEffect(() => {
     console.log('UseEffect running: Apply filters', 'allData length:', allData.length, 'filters:', filters);
     console.log('Filter values - plan:', filters.plan, 'country:', filters.country, 'crmType:', filters.crmType);
+    console.log('Date range:', filters.dateRange);
+    console.log('MRR range:', filters.mrrRange);
+    console.log('Seats range:', filters.seatsRange);
+    console.log('Tenure range:', filters.tenureRange);
+    
     let filtered = [...allData];
-    console.log('Starting with', filtered.length, 'records before filtering');
+    console.log('Starting with', filtered.length, 'records before ANY filtering');
 
     // Date range filter
     if (filters.dateRange.start) {
+      console.log('Applying START date filter:', filters.dateRange.start);
       const startDate = new Date(filters.dateRange.start);
+      const beforeStart = filtered.length;
       filtered = filtered.filter(item => 
         new Date(item.cancellationDate) >= startDate
       );
+      console.log('After START date filter: from', beforeStart, 'to', filtered.length, 'records');
+    } else {
+      console.log('No start date filter');
     }
+    console.log('After date start filter:', filtered.length, 'records');
+    
     if (filters.dateRange.end) {
+      console.log('Applying END date filter:', filters.dateRange.end);
       const endDate = new Date(filters.dateRange.end);
+      const beforeEnd = filtered.length;
       filtered = filtered.filter(item => 
         new Date(item.cancellationDate) <= endDate
       );
+      console.log('After END date filter: from', beforeEnd, 'to', filtered.length, 'records');
+    } else {
+      console.log('No end date filter');
     }
+    console.log('After date range filters:', filtered.length, 'records');
 
     // Plan filter
     console.log('Plan filter check: filters.plan =', filters.plan, ', should filter?', filters.plan !== 'all');
@@ -194,6 +212,7 @@ const ChurnDashboard: React.FC = () => {
     } else {
       console.log('Plan filter skipped (showing all plans)');
     }
+    console.log('After plan filter:', filtered.length, 'records');
 
     // Country filter
     console.log('Country filter check: filters.country =', filters.country, ', should filter?', filters.country !== 'all');
@@ -206,6 +225,7 @@ const ChurnDashboard: React.FC = () => {
     } else {
       console.log('Country filter skipped (showing all countries)');
     }
+    console.log('After country filter:', filtered.length, 'records');
 
     // CRM filter
     console.log('CRM filter check: filters.crmType =', filters.crmType, ', should filter?', filters.crmType !== 'all');
@@ -216,25 +236,60 @@ const ChurnDashboard: React.FC = () => {
     } else {
       console.log('CRM filter skipped (showing all CRMs)');
     }
+    console.log('After CRM filter:', filtered.length, 'records');
 
     // MRR range filter
-    filtered = filtered.filter(item => 
-      item.mrrCancelled >= filters.mrrRange.min && 
-      item.mrrCancelled <= filters.mrrRange.max
-    );
+    console.log('Applying MRR range filter: min =', filters.mrrRange.min, 'max =', filters.mrrRange.max);
+    const beforeMRR = filtered.length;
+    filtered = filtered.filter(item => {
+      const passes = item.mrrCancelled >= filters.mrrRange.min && 
+                     item.mrrCancelled <= filters.mrrRange.max;
+      if (!passes) {
+        console.log('Record filtered out by MRR:', item.mrrCancelled, 'not in range', filters.mrrRange);
+      }
+      return passes;
+    });
+    console.log('After MRR filter: from', beforeMRR, 'to', filtered.length, 'records');
 
     // Seats range filter
-    filtered = filtered.filter(item => 
-      item.seats >= filters.seatsRange.min && 
-      item.seats <= filters.seatsRange.max
-    );
+    console.log('Applying Seats range filter: min =', filters.seatsRange.min, 'max =', filters.seatsRange.max);
+    const beforeSeats = filtered.length;
+    filtered = filtered.filter(item => {
+      const passes = item.seats >= filters.seatsRange.min && 
+                     item.seats <= filters.seatsRange.max;
+      if (!passes) {
+        console.log('Record filtered out by Seats:', item.seats, 'not in range', filters.seatsRange);
+      }
+      return passes;
+    });
+    console.log('After Seats filter: from', beforeSeats, 'to', filtered.length, 'records');
 
     // Tenure range filter (Months Subscribed)
-    filtered = filtered.filter(item => 
-      item.monthsSubscribed >= filters.tenureRange.min && 
-      item.monthsSubscribed <= filters.tenureRange.max
-    );
+    console.log('Applying Tenure range filter: min =', filters.tenureRange.min, 'max =', filters.tenureRange.max);
+    const beforeTenure = filtered.length;
+    filtered = filtered.filter(item => {
+      const passes = item.monthsSubscribed >= filters.tenureRange.min && 
+                     item.monthsSubscribed <= filters.tenureRange.max;
+      if (!passes) {
+        console.log('Record filtered out by Tenure:', item.monthsSubscribed, 'not in range', filters.tenureRange);
+      }
+      return passes;
+    });
+    console.log('After Tenure filter: from', beforeTenure, 'to', filtered.length, 'records');
 
+    console.log('FINAL FILTER SUMMARY:');
+    console.log('  Started with:', allData.length, 'records');
+    console.log('  Ended with:', filtered.length, 'records');
+    console.log('  Filters applied:', {
+      dateRange: filters.dateRange,
+      plan: filters.plan,
+      country: filters.country,
+      crmType: filters.crmType,
+      mrrRange: filters.mrrRange,
+      seatsRange: filters.seatsRange,
+      tenureRange: filters.tenureRange
+    });
+    
     console.log('About to setFilteredData with:', filtered.length, 'records (from', allData.length, 'total)');
     setFilteredData(filtered);
   }, [allData, filters]);

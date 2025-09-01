@@ -165,7 +165,9 @@ const ChurnDashboard: React.FC = () => {
   // Apply filters when allData or filters change
   useEffect(() => {
     console.log('UseEffect running: Apply filters', 'allData length:', allData.length, 'filters:', filters);
+    console.log('Filter values - plan:', filters.plan, 'country:', filters.country, 'crmType:', filters.crmType);
     let filtered = [...allData];
+    console.log('Starting with', filtered.length, 'records before filtering');
 
     // Date range filter
     if (filters.dateRange.start) {
@@ -182,22 +184,37 @@ const ChurnDashboard: React.FC = () => {
     }
 
     // Plan filter
+    console.log('Plan filter check: filters.plan =', filters.plan, ', should filter?', filters.plan !== 'all');
     if (filters.plan !== 'all') {
+      const beforePlan = filtered.length;
       filtered = filtered.filter(item => 
         item.plans.toLowerCase().includes(filters.plan.toLowerCase())
       );
+      console.log('Plan filter applied: from', beforePlan, 'to', filtered.length, 'records');
+    } else {
+      console.log('Plan filter skipped (showing all plans)');
     }
 
     // Country filter
+    console.log('Country filter check: filters.country =', filters.country, ', should filter?', filters.country !== 'all');
     if (filters.country !== 'all') {
+      const beforeCountry = filtered.length;
       filtered = filtered.filter(item => 
         item.country === filters.country
       );
+      console.log('Country filter applied: from', beforeCountry, 'to', filtered.length, 'records');
+    } else {
+      console.log('Country filter skipped (showing all countries)');
     }
 
     // CRM filter
+    console.log('CRM filter check: filters.crmType =', filters.crmType, ', should filter?', filters.crmType !== 'all');
     if (filters.crmType !== 'all') {
+      const beforeCRM = filtered.length;
       filtered = filterByCRM(filtered, filters.crmType);
+      console.log('CRM filter applied: from', beforeCRM, 'to', filtered.length, 'records');
+    } else {
+      console.log('CRM filter skipped (showing all CRMs)');
     }
 
     // MRR range filter

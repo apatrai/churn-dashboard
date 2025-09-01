@@ -9,5 +9,5 @@ console.log('Supabase client initialized:', supabase)
 
 // Make supabase available globally for debugging
 if (typeof window !== 'undefined') {
-  window.supabase = supabase;
+  (window as any).supabase = supabase;
 }

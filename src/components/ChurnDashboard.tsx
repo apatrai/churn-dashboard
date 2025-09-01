@@ -33,17 +33,29 @@ const ChurnDashboard: React.FC = () => {
 
   // Load data from localStorage and Supabase on mount
   useEffect(() => {
+    console.log('Component mounted, fetching data...');
+    
     const loadData = async () => {
       try {
         console.log('Supabase client:', supabase);
         console.log('Supabase type:', typeof supabase);
+        
+        console.log('Fetching from Supabase...');
         
         // Try to fetch data from Supabase first
         const { data: supabaseData, error } = await supabase
           .from('churn_data')
           .select('*');
         
+        console.log('Supabase response:', supabaseData, error);
+        console.log('Supabase data:', supabaseData);
+        
+        if (error) {
+          console.log('Supabase error:', error);
+        }
+        
         if (!error && supabaseData && supabaseData.length > 0) {
+          console.log('Processing', supabaseData.length, 'records from Supabase');
           // Convert Supabase data to ChurnRecord format
           const formattedData: ChurnRecord[] = supabaseData.map(record => ({
             email: record.email || '',
@@ -61,26 +73,32 @@ const ChurnDashboard: React.FC = () => {
           setAllData(formattedData);
           // Also update localStorage as backup
           localStorage.setItem('churnDashboardData', JSON.stringify(formattedData));
+          console.log('Data loaded from Supabase and saved to localStorage');
         } else {
+          console.log('No data from Supabase or error occurred, falling back to localStorage');
           // Fallback to localStorage if Supabase is empty or has error
           const storedData = localStorage.getItem('churnDashboardData');
           if (storedData) {
             try {
               const parsedData = JSON.parse(storedData);
               setAllData(parsedData);
+              console.log('Loaded', parsedData.length, 'records from localStorage');
             } catch (error) {
               console.error('Error loading stored data:', error);
             }
+          } else {
+            console.log('No data in localStorage either');
           }
         }
       } catch (error) {
-        console.error('Error loading from Supabase:', error);
+        console.error('Error in loadData function:', error);
         // Fallback to localStorage
         const storedData = localStorage.getItem('churnDashboardData');
         if (storedData) {
           try {
             const parsedData = JSON.parse(storedData);
             setAllData(parsedData);
+            console.log('Loaded', parsedData.length, 'records from localStorage after error');
           } catch (error) {
             console.error('Error loading stored data:', error);
           }
